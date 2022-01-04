@@ -1,1 +1,4 @@
-console.log('hello webpack')
+import Title from './components/title.js'
+
+const title = new Title()
+title.create("Primeira pagina")
