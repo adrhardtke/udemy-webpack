@@ -1,53 +1,41 @@
 const path = require('path')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 module.exports = {
-    entry: './src/index.js',
+    entry: './src/index.ts',
     output: {
         path: path.resolve(__dirname, 'dist'),
-        filename: 'bundle.js'
+        filename: 'main.js',
+        publicPath: '/'
+    },
+    mode: 'development',
+    devServer: {
+        historyApiFallback: true
     },
     module: {
         rules: [
-            // css loader
+            {
+                test: /\.js$/,
+                use: 'babel-loader'
+            },
             {
                 test: /\.css$/,
-                use: ['style-loader', 'css-loader'] // yarn add style-loader css-loader -D
+                use: ['style-loader', 'css-loader']
             },
-            // image loader
             {
-                test: /\.(png|jpg|jpeg)$/,
-                use: ['file-loader'] // yarn add file-loader -D
-            },
-            // sass loader
-            {
-                test: /\.scss$/,
-                use: ['style-loader', 'css-loader', 'sass-loader'] //yarn add sass-loader node-sass -D
-            },
-            // loaders para novas funcionalidades JS
-            {
-                test: '/\.(js|jsx)$/',
-                exclude: /(node_modules|bower_components)/,
-                use: {
-                    loader: 'babel-loader',
-                    options: {
-                        presets: ['@babel/preset-env'],
-                        plugins: [
-                            '@babel/plugin-proposal-object-rest-spread', // yarn add @babel/core babel-loader @babel/preset-env @babel/plugin-proposal-object-rest-spread -D
-                            '@babel/plugin-proposal-decorators'
-                        ] 
-                    }
-                }
-            },
-            // Html Loader
-            {
-                test: /\.html$/,
-                use: 'html-loader' // yarn add html-loader -D
-            },
-            // Text Loader
-            {
-                test: /\.txt$/,
-                use: 'raw-loader', // yarn add raw-loader -D
+                test: /\.tsx?$/,
+                use: 'ts-loader',
+                exclude: /node_modules/
             }
         ]
-    }
+    },
+    resolve: {
+        extensions: ['.tsx','.ts', '.js']
+    },
+    plugins: [
+        new HtmlWebpackPlugin({
+            template: path.resolve(__dirname, 'public/index.html'),
+            filename: 'index.html'
+        })
+    ]
 }
