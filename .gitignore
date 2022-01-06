@@ -1,1 +1,3 @@
-/node_modules
+packages/home/node_modules
+packages/contact/node_modules
+packages/app/node_modules
