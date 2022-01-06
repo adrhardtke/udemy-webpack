@@ -1,53 +1,45 @@
 const path = require('path')
+const webpack = require('webpack')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 module.exports = {
-    entry: './src/index.js',
+    entry: {
+        index: {
+            import: './src/index.js',
+            dependOn: 'shared'
+        },
+        test: {
+            import: './src/test.js',
+            dependOn: 'shared'
+        },
+        shared: 'lodash'
+    },
     output: {
-        path: path.resolve(__dirname, 'dist'),
-        filename: 'bundle.js'
+        path: path.resolve(__dirname, './dist'),
+        filename: '[name].js'
+    },
+    devServer: {
+        historyApiFallback: true,
+        hot: true
     },
     module: {
         rules: [
-            // css loader
             {
-                test: /\.css$/,
-                use: ['style-loader', 'css-loader'] // yarn add style-loader css-loader -D
-            },
-            // image loader
-            {
-                test: /\.(png|jpg|jpeg)$/,
-                use: ['file-loader'] // yarn add file-loader -D
-            },
-            // sass loader
-            {
-                test: /\.scss$/,
-                use: ['style-loader', 'css-loader', 'sass-loader'] //yarn add sass-loader node-sass -D
-            },
-            // loaders para novas funcionalidades JS
-            {
-                test: '/\.(js|jsx)$/',
-                exclude: /(node_modules|bower_components)/,
-                use: {
-                    loader: 'babel-loader',
-                    options: {
-                        presets: ['@babel/preset-env'],
-                        plugins: [
-                            '@babel/plugin-proposal-object-rest-spread', // yarn add @babel/core babel-loader @babel/preset-env @babel/plugin-proposal-object-rest-spread -D
-                            '@babel/plugin-proposal-decorators'
-                        ] 
-                    }
-                }
-            },
-            // Html Loader
-            {
-                test: /\.html$/,
-                use: 'html-loader' // yarn add html-loader -D
-            },
-            // Text Loader
-            {
-                test: /\.txt$/,
-                use: 'raw-loader', // yarn add raw-loader -D
+                test:/.js$/,
+                loader: 'babel-loader',
+                include: path.resolve(__dirname, 'src')
             }
         ]
+    },
+    plugins: [
+        new webpack.ProvidePlugin({
+            _: 'lodash'
+        }),
+        new HtmlWebpackPlugin({
+            title: 'titulo'
+        })
+    ],
+    optimization: {
+        runtimeChunk: true
     }
 }
